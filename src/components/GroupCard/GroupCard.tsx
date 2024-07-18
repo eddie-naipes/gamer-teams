@@ -5,7 +5,7 @@ type Props = TouchableOpacityProps & {
     title: string;
 }
 
-export const GroupCard = ({title, ...rest}: Props) => {
+export const GroupCard = ({title}: Props) => {
     return (
         <Container>
             <Icon/>
