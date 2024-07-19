@@ -1,4 +1,4 @@
-import {BackButton, BackIcon, Container} from "./styles";
+import {BackButton, BackIcon, Container, Logo} from "./styles";
 import {ShieldPlus} from "phosphor-react-native";
 
 type Props = {
@@ -14,7 +14,7 @@ export const Header = ({showBackButton = false}:Props) => {
                 <BackIcon/>
             </BackButton>
             }
-            <ShieldPlus/>
+            <Logo/>
         </Container>
     );
 };
