@@ -4,13 +4,15 @@ import {HighLight} from "@components/Heghlight/HighLight";
 import {Button} from "@components/Button/Button";
 import {Input} from "@components/Input/Input";
 import {useNavigation} from "@react-navigation/native"
+import {useState} from "react";
 
 export const NewGroup = () => {
 
     const navigation = useNavigation();
+    const [groupName, setGroupName] = useState<string>("");
 
     const handleCreatePlayer = () => {
-        navigation.navigate("player", {group: "naipes"})
+        navigation.navigate("player", {group: groupName})
     }
 
     return (
@@ -26,6 +28,8 @@ export const NewGroup = () => {
                 />
                 <Input
                     placeholder={"Nome da turma"}
+                    onChangeText={setGroupName}
+                    value={groupName}
                 />
                 <Button
                     title={"Criar"}
