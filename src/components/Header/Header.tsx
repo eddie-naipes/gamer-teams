@@ -1,5 +1,5 @@
 import {BackButton, BackIcon, Container, Logo} from "./styles";
-import {ShieldPlus} from "phosphor-react-native";
+import {useNavigation} from "@react-navigation/native"
 
 type Props = {
     showBackButton?: boolean;
@@ -7,10 +7,19 @@ type Props = {
 
 
 export const Header = ({showBackButton = false}:Props) => {
+
+    const navigate = useNavigation();
+
+    const handleGoHome = () => {
+        navigate.navigate("groups");
+    }
+
     return (
         <Container>
             { showBackButton &&
-                <BackButton>
+                <BackButton
+                    onPress={handleGoHome}
+                >
                 <BackIcon/>
             </BackButton>
             }

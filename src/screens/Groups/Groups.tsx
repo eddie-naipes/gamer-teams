@@ -6,10 +6,17 @@ import {FlatList} from "react-native"
 import {GroupCard} from "@components/GroupCard/GroupCard";
 import {ListEmpty} from "@components/ListEmpty/ListEmpty";
 import {Button} from "@components/Button/Button"
+import {useNavigation} from "@react-navigation/native"
+
 
 export  function Groups() {
 
     const [groups, setGroups] = useState<string[]>([]);
+    const navigation = useNavigation();
+
+    const handleNewGroup = () => {
+        navigation.navigate("new")
+    }
 
     return (
         <Container>
@@ -30,6 +37,7 @@ export  function Groups() {
 
             <Button
                 title={"Criar nova turma"}
+                onPress={handleNewGroup}
             />
         </Container>
     );

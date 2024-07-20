@@ -3,8 +3,16 @@ import {Header} from "@components/Header/Header";
 import {HighLight} from "@components/Heghlight/HighLight";
 import {Button} from "@components/Button/Button";
 import {Input} from "@components/Input/Input";
+import {useNavigation} from "@react-navigation/native"
 
 export const NewGroup = () => {
+
+    const navigation = useNavigation();
+
+    const handleCreatePlayer = () => {
+        navigation.navigate("player", {group: "naipes"})
+    }
+
     return (
         <Container>
             <Header
@@ -21,6 +29,7 @@ export const NewGroup = () => {
                 />
                 <Button
                     title={"Criar"}
+                    onPress={handleCreatePlayer}
                 />
             </Content>
         </Container>
