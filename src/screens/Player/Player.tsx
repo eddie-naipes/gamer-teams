@@ -4,12 +4,16 @@ import {HighLight} from "@components/Heghlight/HighLight";
 import {ButtonIcon} from "@components/ButtonIcon/ButtonIcon";
 import {Input} from "@components/Input/Input";
 import {Filter} from "@components/Filter/Filter";
-import {FlatList} from "react-native";
+import {Alert, FlatList} from "react-native";
 import {useState} from "react";
 import {PlayerCard} from "@components/PlayerCard/PlayerCard";
 import {ListEmpty} from "@components/ListEmpty/ListEmpty";
 import {Button} from "@components/Button/Button";
 import {useRoute} from "@react-navigation/native";
+import {playerAddByGroup} from "@storage/player/PlayerAddByGroup";
+import {playersGetByGroup} from "@storage/player/playersGetByGroup";
+import {playersGetByGroupAndTeam} from "@storage/player/playersGetByGroupAndTeam";
+import {PlayerStorageDTO} from "@storage/player/PlayerStorageDTO";
 
 
 type RouteParams = {
@@ -18,10 +22,35 @@ type RouteParams = {
 
 export const Player = () => {
 
-    const [teams, setTeams] = useState('Time A');
-    const [players, setPlayers] = useState([]);
+    const [team, setTeam] = useState('Time A');
+    const [players, setPlayers] = useState<PlayerStorageDTO[]>([]);
     const route = useRoute()
     const {group} = route.params as RouteParams
+    const [newPlayerName, setNewPlayerName] = useState('')
+
+
+    async function handleAddPlayer() {
+        if (newPlayerName.trim().length === 0) {
+            return Alert.alert("Player", "Nome do jogador não pode ser vazio")
+        }
+        const newPlayer = {
+            name: newPlayerName,
+            team
+        }
+
+        try {
+            await playerAddByGroup(newPlayer, group)
+            const players = await playersGetByGroup(group)
+        } catch (error) {
+            Alert.alert("Player", "Erro ao adicionar jogador")
+        }
+
+    }
+
+    async function loadPlayersByTeam() {
+        const playersByTeam = await playersGetByGroupAndTeam(group, team)
+        setPlayers(playersByTeam)
+    }
 
     return (
         <Container>
@@ -36,8 +65,10 @@ export const Player = () => {
                 <Input
                     placeholder={"Digite o nome da pessoa"}
                     autoCorrect={false}
+                    onChangeText={setNewPlayerName}
+                    value={newPlayerName}
                 />
-                <ButtonIcon icon={"add"}/>
+                <ButtonIcon icon={"add"} onPress={handleAddPlayer}/>
             </Form>
 
             <HeaderList>
@@ -47,8 +78,8 @@ export const Player = () => {
                     renderItem={({item}) => (
                         <Filter
                             title={item}
-                            isActive={item === teams}
-                            onPress={() => setTeams(item)}
+                            isActive={item === team}
+                            onPress={() => setTeam(item)}
                         />
                     )}
                     horizontal
@@ -60,10 +91,10 @@ export const Player = () => {
 
             <FlatList
                 data={players}
-                keyExtractor={item => item}
+                keyExtractor={item => item.name}
                 renderItem={({item}) => (
                     <PlayerCard
-                        name={item}
+                        name={item.name}
                         onRemove={() => {}}
                     />
                 )}
