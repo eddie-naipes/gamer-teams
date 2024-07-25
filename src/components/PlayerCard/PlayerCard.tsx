@@ -8,7 +8,6 @@ type Props = {
 }
 
 export const PlayerCard = ({name}: Props) => {
-    console.log('nome card', JSON.parse(name))
     return (
         <Container>
             <Icon name="person"/>

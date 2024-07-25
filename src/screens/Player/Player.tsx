@@ -4,14 +4,13 @@ import {HighLight} from "@components/Heghlight/HighLight";
 import {ButtonIcon} from "@components/ButtonIcon/ButtonIcon";
 import {Input} from "@components/Input/Input";
 import {Filter} from "@components/Filter/Filter";
-import {Alert, FlatList} from "react-native";
-import {useState} from "react";
+import {Alert, FlatList, TextInput} from "react-native";
+import {useEffect, useState, useRef} from "react";
 import {PlayerCard} from "@components/PlayerCard/PlayerCard";
 import {ListEmpty} from "@components/ListEmpty/ListEmpty";
 import {Button} from "@components/Button/Button";
 import {useRoute} from "@react-navigation/native";
 import {playerAddByGroup} from "@storage/player/PlayerAddByGroup";
-import {playersGetByGroup} from "@storage/player/playersGetByGroup";
 import {playersGetByGroupAndTeam} from "@storage/player/playersGetByGroupAndTeam";
 import {PlayerStorageDTO} from "@storage/player/PlayerStorageDTO";
 
@@ -27,6 +26,7 @@ export const Player = () => {
     const route = useRoute()
     const {group} = route.params as RouteParams
     const [newPlayerName, setNewPlayerName] = useState('')
+    const newPlayerNameInputRef = useRef<TextInput>(null)
 
 
     async function handleAddPlayer() {
@@ -40,7 +40,9 @@ export const Player = () => {
 
         try {
             await playerAddByGroup(newPlayer, group)
-            const players = await playersGetByGroup(group)
+            loadPlayersByTeam().then(r => r)
+            setNewPlayerName('')
+            newPlayerNameInputRef.current?.blur()
         } catch (error) {
             Alert.alert("Player", "Erro ao adicionar jogador")
         }
@@ -52,6 +54,9 @@ export const Player = () => {
         setPlayers(playersByTeam)
     }
 
+    useEffect(() => {
+        loadPlayersByTeam().then(r => r)
+    }, [team])
     return (
         <Container>
             <Header
@@ -63,10 +68,13 @@ export const Player = () => {
             />
             <Form>
                 <Input
+                    inputRef={newPlayerNameInputRef}
                     placeholder={"Digite o nome da pessoa"}
                     autoCorrect={false}
                     onChangeText={setNewPlayerName}
                     value={newPlayerName}
+                    onSubmitEditing={handleAddPlayer}
+                    returnKeyType={"done"}
                 />
                 <ButtonIcon icon={"add"} onPress={handleAddPlayer}/>
             </Form>
