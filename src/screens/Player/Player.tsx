@@ -13,6 +13,9 @@ import {useRoute} from "@react-navigation/native";
 import {playerAddByGroup} from "@storage/player/PlayerAddByGroup";
 import {playersGetByGroupAndTeam} from "@storage/player/playersGetByGroupAndTeam";
 import {PlayerStorageDTO} from "@storage/player/PlayerStorageDTO";
+import {playerRemovedByGroups} from "@storage/player/playerRemovedByGroups";
+import {removeGroupByName} from "@storage/group/groupRemoveByName";
+import {useNavigation} from "@react-navigation/native";
 
 
 type RouteParams = {
@@ -27,6 +30,7 @@ export const Player = () => {
     const {group} = route.params as RouteParams
     const [newPlayerName, setNewPlayerName] = useState('')
     const newPlayerNameInputRef = useRef<TextInput>(null)
+    const navigation = useNavigation()
 
 
     async function handleAddPlayer() {
@@ -52,6 +56,29 @@ export const Player = () => {
     async function loadPlayersByTeam() {
         const playersByTeam = await playersGetByGroupAndTeam(group, team)
         setPlayers(playersByTeam)
+    }
+
+
+        async function handleRemovePlayer(playerName: string) {
+            await playerRemovedByGroups(group, playerName)
+            loadPlayersByTeam().then(r => r)
+    }
+
+    async function handleRemoveGroup() {
+        Alert.alert("Player", "Deseja realmente remover o grupo?", [
+            {
+                text: "Não",
+                style: "cancel"
+            },
+            {
+                text: "Sim",
+                onPress: async () => {
+                    await removeGroupByName(group)
+                    navigation.navigate("groups")
+                }
+            }
+        ])
+
     }
 
     useEffect(() => {
@@ -103,7 +130,7 @@ export const Player = () => {
                 renderItem={({item}) => (
                     <PlayerCard
                         name={item.name}
-                        onRemove={() => {}}
+                        onRemove={() => handleRemovePlayer(item.name)}
                     />
                 )}
                 ListEmptyComponent={ () => (
@@ -116,7 +143,11 @@ export const Player = () => {
                 ]}
             />
 
-            <Button title={"Remover Turma"} type={"SECONDARY"} />
+            <Button
+                title={"Remover Turma"}
+                type={"SECONDARY"}
+                onPress={handleRemoveGroup}
+            />
         </Container>
     );
 };

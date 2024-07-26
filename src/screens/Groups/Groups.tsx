@@ -8,8 +8,6 @@ import { ListEmpty } from "@components/ListEmpty/ListEmpty";
 import { Button } from "@components/Button/Button";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getAllGroup } from "@storage/group/GroupsGetAll";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { GROUP_COLLECTION } from "@storage/storageConfig";
 
 export function Groups() {
     const [groups, setGroups] = useState<string[]>([]);

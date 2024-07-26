@@ -7,12 +7,16 @@ type Props = {
     onRemove: () => void;
 }
 
-export const PlayerCard = ({name}: Props) => {
+export const PlayerCard = ({name, onRemove}: Props) => {
     return (
         <Container>
             <Icon name="person"/>
             <Name>{name}</Name>
-            <ButtonIcon icon={"close"} type={"SECONDARY"}/>
+            <ButtonIcon
+                icon={"close"}
+                type={"SECONDARY"}
+                onPress={onRemove}
+            />
         </Container>
     );
 };
